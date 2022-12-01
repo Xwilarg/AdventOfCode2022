@@ -1,21 +1,24 @@
 ﻿using AdventOfCode2022;
+using System.Reflection;
 
 if (!Directory.Exists("Data"))
 {
     throw new FileNotFoundException("Missing Data/ folder");
 }
 
-var data = new[]
+int currDay = (int)DateTime.Now.Subtract(new DateTime(2022, 12, 1)).TotalDays + 1;
+if (currDay > 24)
 {
-    new Day01()
-};
+    currDay = 24;
+}
 
-using HttpClient http = new();
-
-for (var i = 0; i < data.Length; i++)
+for (var i = 0; i < currDay; i++)
 {
+    var type = Assembly.GetExecutingAssembly().GetType($"AdventOfCode2022.Day{(i > 8 ? "" : "0")}{i + 1}", true)!;
+    var day = (IDay)Activator.CreateInstance(type)!;
+
     Console.WriteLine($"--- Day {i + 1} ---");
     var input = File.ReadAllText($"Data/day{i + 1}.txt");
-    Console.WriteLine($"Part 1: {data[i].Part1(input)}");
-    Console.WriteLine($"Part 2: {data[i].Part2(input)}");
+    Console.WriteLine($"Part 1: {day.Part1(input)}");
+    Console.WriteLine($"Part 2: {day.Part2(input)}");
 }
