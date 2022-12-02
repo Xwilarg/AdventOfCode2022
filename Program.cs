@@ -18,7 +18,7 @@ for (var i = 0; i < currDay; i++)
     var day = (IDay)Activator.CreateInstance(type)!;
 
     Console.WriteLine($"--- Day {i + 1} ---");
-    var input = File.ReadAllText($"Data/day{i + 1}.txt");
+    var input = File.ReadAllText($"Data/day{i + 1}.txt").Trim();
     Console.WriteLine($"Part 1: {day.Part1(input)}");
     Console.WriteLine($"Part 2: {day.Part2(input)}");
 }

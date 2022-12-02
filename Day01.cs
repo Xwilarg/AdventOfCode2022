@@ -3,7 +3,7 @@
     public class Day01 : IDay
     {
         private IEnumerable<int> GetAllSum(string input)
-            => input.Trim().Split("\n\n").Select(x => x.Split('\n').Sum(y => int.Parse(y))).OrderByDescending(x => x);
+            => input.Split("\n\n").Select(x => x.Split('\n').Sum(y => int.Parse(y))).OrderByDescending(x => x);
 
         public string Part1(string input)
         {
