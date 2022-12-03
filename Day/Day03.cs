@@ -14,8 +14,8 @@
 
                 // Calculate score
                 if (l >= 'a')
-                    return 'a' - l + 1;
-                return 'A' - l + 27;
+                    return l - 'a' + 1;
+                return l - 'A'+ 27;
             }).Sum().ToString();
         }
 
