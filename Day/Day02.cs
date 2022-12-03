@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2022
+﻿namespace AdventOfCode2022.Day
 {
     public class Day02 : IDay
     {
@@ -25,10 +25,10 @@
                 var a1 = 3 - ('C' - x[0]);
                 var a2 = 3 - ('Z' - x[2]);
 
-                return ((a2 - 1) * 3) + // Score of the round result
+                return (a2 - 1) * 3 + // Score of the round result
                     (a2 == 2 ? a1 // Need to draw, return a1
-                    : a2 == 1 ? (a1 == 1 ? 3 : a1 - 1) // Loose
-                    : (a1 == 3 ? 1 : a1 + 1)); // Win
+                    : a2 == 1 ? a1 == 1 ? 3 : a1 - 1 // Loose
+                    : a1 == 3 ? 1 : a1 + 1); // Win
             }).Sum().ToString();
         }
     }

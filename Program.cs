@@ -38,9 +38,9 @@ foreach (var info in allData)
 // Return information about a day given its number and path to input field
 DayInfo GetDayInfo(int dayNumber, string inputPath)
 {
-    var type = Assembly.GetExecutingAssembly().GetType($"AdventOfCode2022.Day{(dayNumber > 9 ? "" : "0")}{dayNumber}", true)!;
+    var type = Assembly.GetExecutingAssembly().GetType($"AdventOfCode2022.Day.Day{(dayNumber > 9 ? "" : "0")}{dayNumber}", true)!;
     var day = (IDay)Activator.CreateInstance(type)!;
-    var input = File.ReadAllText(inputPath).Trim();
+    var input = File.ReadAllText(inputPath).Trim().Replace("\r", "");
 
     return new() { Name = $"Day {dayNumber}", Day = day, Input = input };
 }
