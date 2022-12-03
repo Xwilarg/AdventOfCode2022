@@ -24,7 +24,7 @@ for (var i = 1; i <= currDay; i++)
 if (File.Exists("data/sample.txt"))
 {
     var data = GetDayInfo(currDay, "data/sample.txt");
-    allData.Add(data with { Name = "Sample Data" });
+    allData.Insert(allData.Count - 1, data with { Name = $"Day {currDay} (Sample Data)" });
 }
 
 // Display the results for each day
@@ -33,6 +33,7 @@ foreach (var info in allData)
     Console.WriteLine($"--- {info.Name} ---");
     Console.WriteLine($"Part 1: {info.Day.Part1(info.Input)}");
     Console.WriteLine($"Part 2: {info.Day.Part2(info.Input)}");
+    Console.WriteLine();
 }
 
 // Return information about a day given its number and path to input field
@@ -47,7 +48,7 @@ DayInfo GetDayInfo(int dayNumber, string inputPath)
 
 record DayInfo
 {
-    public required string Name;
-    public required IDay Day;
-    public required string Input;
+    public required string Name { init; get; }
+    public required IDay Day { init; get; }
+    public required string Input { init; get; }
 }
