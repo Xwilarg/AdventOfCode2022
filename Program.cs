@@ -24,7 +24,7 @@ for (var i = 1; i <= currDay; i++)
 if (File.Exists("data/sample.txt"))
 {
     var data = GetDayInfo(currDay, "data/sample.txt");
-    allData.Insert(allData.Count - 1, data with { Name = $"Day {currDay} (Sample Data)" });
+    allData.Add(data with { Name = $"Day {currDay} (Sample Data)" });
 }
 
 // Display the results for each day

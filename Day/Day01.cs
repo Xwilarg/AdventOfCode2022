@@ -6,14 +6,14 @@
         private static IEnumerable<int> GetAllSum(string input)
             => input.Split("\n\n").Select(x => x.Split('\n').Sum(y => int.Parse(y))).OrderByDescending(x => x);
 
-        public string Part1(string input)
+        public int Part1(string input)
         {
-            return GetAllSum(input).First().ToString();
+            return GetAllSum(input).First();
         }
 
-        public string Part2(string input)
+        public int Part2(string input)
         {
-            return GetAllSum(input).Take(3).Sum().ToString();
+            return GetAllSum(input).Take(3).Sum();
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Day02 : IDay
     {
-        public string Part1(string input)
+        public int Part1(string input)
         {
             return input.Split('\n').Select(x =>
             {
@@ -15,10 +15,10 @@
                     (a1 == a2 ? 3 // Values are equal, draw
                     : d == 1 || d == -2 ? 6 // Win
                     : 0); // Loose
-            }).Sum().ToString();
+            }).Sum();
         }
 
-        public string Part2(string input)
+        public int Part2(string input)
         {
             return input.Split('\n').Select(x =>
             {
@@ -29,7 +29,7 @@
                     (a2 == 2 ? a1 // Need to draw, return a1
                     : a2 == 1 ? a1 == 1 ? 3 : a1 - 1 // Loose
                     : a1 == 3 ? 1 : a1 + 1); // Win
-            }).Sum().ToString();
+            }).Sum();
         }
     }
 }
