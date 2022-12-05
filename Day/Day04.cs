@@ -10,7 +10,7 @@
             return arr.Select(y => y.Split('-').Select(z => int.Parse(z)).ToArray()).ToArray();
         }
 
-        public int Part1(string input)
+        public string Part1(string input)
         {
             return input.Split('\n').Count(x =>
             {
@@ -18,10 +18,10 @@
 
                 // Does they englobe each other?
                 return (rd[0][0] >= rd[1][0] && rd[0][1] <= rd[1][1]) || (rd[1][0] >= rd[0][0] && rd[1][1] <= rd[0][1]);
-            });
+            }).ToString();
         }
 
-        public int Part2(string input)
+        public string Part2(string input)
         {
             return input.Split('\n').Count(x =>
             {
@@ -29,7 +29,7 @@
 
                 // The minimum value of one of the range is inside the other
                 return (rd[0][0] >= rd[1][0] && rd[0][0] <= rd[1][1]) || (rd[1][0] >= rd[0][0] && rd[1][0] <= rd[0][1]);
-            });
+            }).ToString();
         }
     }
 }

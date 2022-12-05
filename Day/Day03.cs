@@ -9,7 +9,7 @@
             return c - 'A' + 27;
         }
 
-        public int Part1(string input)
+        public string Part1(string input)
         {
             return input.Split('\n').Select(x =>
             {
@@ -21,10 +21,10 @@
                 var l = p1.First(x => p2.Contains(x));
 
                 return LetterToScore(l);
-            }).Sum();
+            }).Sum().ToString();
         }
 
-        public int Part2(string input)
+        public string Part2(string input)
         {
             var arr = input.Split("\n");
             // Take data by chunk of 3
@@ -37,7 +37,7 @@
                 var l = data[0].First(x => data[1].Contains(x) && data[2].Contains(x));
 
                 return LetterToScore(l);
-            }).Sum();
+            }).Sum().ToString();
         }
     }
 }

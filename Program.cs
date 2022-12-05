@@ -41,7 +41,7 @@ DayInfo GetDayInfo(int dayNumber, string inputPath)
 {
     var type = Assembly.GetExecutingAssembly().GetType($"AdventOfCode2022.Day.Day{(dayNumber > 9 ? "" : "0")}{dayNumber}", true)!;
     var day = (IDay)Activator.CreateInstance(type)!;
-    var input = File.ReadAllText(inputPath).Trim().Replace("\r", "");
+    var input = File.ReadAllText(inputPath).Replace("\r", "").Trim('\n');
 
     return new() { Name = $"Day {dayNumber}", Day = day, Input = input };
 }
