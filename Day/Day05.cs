@@ -7,7 +7,12 @@ namespace AdventOfCode2022.Day
         [GeneratedRegex("move (\\d+) from (\\d+) to (\\d+)")]
         private static partial Regex MoveParsingRegex();
 
-        public string Part1(string input)
+        /// <param name="input">File content</param>
+        /// <param name="onDataPush">
+        /// Modification done when data are pushed on a stack
+        /// By default data are picked "by a crane" so 1,2,3 become 3,2,1
+        /// </param>
+        public static string Parse(string input, Func<IEnumerable<char>, IEnumerable<char>> onDataPush)
         {
             var lines = input.Split('\n');
 
@@ -58,7 +63,7 @@ namespace AdventOfCode2022.Day
 
                 // Add data to destination list
                 stacks[from - 1].Reverse();
-                stacks[to - 1].AddRange(stacks[from - 1].Take(count));
+                stacks[to - 1].AddRange(onDataPush(stacks[from - 1].Take(count)));
                 stacks[from - 1].Reverse();
 
                 // Remove data from original list
@@ -71,9 +76,17 @@ namespace AdventOfCode2022.Day
             return string.Join("", stacks.Select(x => x.Last()));
         }
 
+        public string Part1(string input)
+        {
+            return Parse(input, d => d);
+        }
+
         public string Part2(string input)
         {
-            return null;
+            return Parse(input, (d) =>
+            {
+                return d.Reverse();
+            });
         }
     }
 }
