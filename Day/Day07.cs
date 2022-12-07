@@ -55,12 +55,12 @@
                 if (data.Size <= 100000)
                 {
                     size += data.Size;
-                    foreach (var child in data.SubDirs)
+                }
+                foreach (var child in data.SubDirs)
+                {
+                    if (child is DirectoryInfo childDir)
                     {
-                        if (child is DirectoryInfo childDir)
-                        {
-                            size += ParseSubDirs(childDir);
-                        }
+                        size += ParseSubDirs(childDir);
                     }
                 }
             }
