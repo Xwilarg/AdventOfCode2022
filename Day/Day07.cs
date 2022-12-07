@@ -47,27 +47,7 @@
             public List<FileInfo> SubDirs { private init; get; }
         }
 
-        private static int ParseSubDirs(DirectoryInfo dir)
-        {
-            var size = dir.Name != "root" && dir.Size < 100000 ? dir.Size : 0;
-            foreach (DirectoryInfo data in dir.SubDirs.Where(x => x is DirectoryInfo))
-            {
-                if (data.Size <= 100000)
-                {
-                    size += data.Size;
-                }
-                foreach (var child in data.SubDirs)
-                {
-                    if (child is DirectoryInfo childDir)
-                    {
-                        size += ParseSubDirs(childDir);
-                    }
-                }
-            }
-            return size;
-        }
-
-        public string Part1(string input)
+        private static DirectoryInfo ParseDirectories(string input)
         {
             // Split to get all commands and remove the empty space at the start
             // We also skip the first command that is always cd /
@@ -89,11 +69,11 @@
                         var oData = o.Split(' ');
                         if (oData[0] == "dir") // We listed a directory
                         {
-                            currDirectory!.SubDirs.Add(new DirectoryInfo(oData[1], currDirectory));
+                            currDirectory.SubDirs.Add(new DirectoryInfo(oData[1], currDirectory));
                         }
                         else
                         {
-                            currDirectory!.SubDirs.Add(new(oData[1], currDirectory, int.Parse(oData[0])));
+                            currDirectory.SubDirs.Add(new(oData[1], currDirectory, int.Parse(oData[0])));
                         }
                     }
                 }
@@ -101,22 +81,68 @@
                 {
                     if (cmdData[1] == "..") // Going back to the parent
                     {
-                        currDirectory = currDirectory!.Parent;
+                        currDirectory = currDirectory.Parent!;
                     }
                     else
                     {
                         // cd into a file
-                        currDirectory = (DirectoryInfo)currDirectory!.SubDirs.First(x => x.Name == cmdData[1]);
+                        currDirectory = (DirectoryInfo)currDirectory.SubDirs.First(x => x.Name == cmdData[1]);
                     }
                 }
             }
 
-            return ParseSubDirs(root).ToString();
+            return root;
+        }
+
+        private static int GetTotalSize(DirectoryInfo dir)
+        {
+            var size = dir.Name != "root" && dir.Size < 100000 ? dir.Size : 0; // Initial size only if file small enough and not root
+            foreach (DirectoryInfo data in dir.SubDirs.Where(x => x is DirectoryInfo).Cast<DirectoryInfo>())
+            {
+                if (data.Size <= 100000)
+                {
+                    size += data.Size;
+                }
+                foreach (var child in data.SubDirs)
+                {
+                    if (child is DirectoryInfo childDir)
+                    {
+                        size += GetTotalSize(childDir);
+                    }
+                }
+            }
+            return size;
+        }
+
+        private static DirectoryInfo GetSmallestSizeExceeding(DirectoryInfo dir, int floorValue, DirectoryInfo? target)
+        {
+            foreach (DirectoryInfo data in dir.SubDirs.Where(x => x is DirectoryInfo).Cast<DirectoryInfo>())
+            {
+                if (data.Size > floorValue && (target == null || data.Size < target.Size))
+                {
+                    target = data;
+                }
+                foreach (var child in data.SubDirs)
+                {
+                    if (child is DirectoryInfo childDir)
+                    {
+                        target = GetSmallestSizeExceeding(childDir, floorValue, target);
+                    }
+                }
+            }
+            return target;
+        }
+
+        public string Part1(string input)
+        {
+            return GetTotalSize(ParseDirectories(input)).ToString();
         }
 
         public string Part2(string input)
         {
-            return string.Empty;
+            var root = ParseDirectories(input);
+            var targetSize = root.Size - 40000000;
+            return GetSmallestSizeExceeding(root, targetSize, null).Size.ToString();
         }
     }
 }
