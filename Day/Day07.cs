@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-
-namespace AdventOfCode2022.Day
+﻿namespace AdventOfCode2022.Day
 {
     public class Day07 : IDay
     {
@@ -49,6 +47,26 @@ namespace AdventOfCode2022.Day
             public List<FileInfo> SubDirs { private init; get; }
         }
 
+        private static int ParseSubDirs(DirectoryInfo dir)
+        {
+            var size = dir.Name != "root" && dir.Size < 100000 ? dir.Size : 0;
+            foreach (DirectoryInfo data in dir.SubDirs.Where(x => x is DirectoryInfo))
+            {
+                if (data.Size <= 100000)
+                {
+                    size += data.Size;
+                    foreach (var child in data.SubDirs)
+                    {
+                        if (child is DirectoryInfo childDir)
+                        {
+                            size += ParseSubDirs(childDir);
+                        }
+                    }
+                }
+            }
+            return size;
+        }
+
         public string Part1(string input)
         {
             // Split to get all commands and remove the empty space at the start
@@ -87,12 +105,13 @@ namespace AdventOfCode2022.Day
                     }
                     else
                     {
+                        // cd into a file
                         currDirectory = (DirectoryInfo)currDirectory!.SubDirs.First(x => x.Name == cmdData[1]);
                     }
                 }
             }
 
-            return root.SubDirs.Where(x => x is DirectoryInfo && x.Size >= 10000).Select(x => x.Size).Sum().ToString();
+            return ParseSubDirs(root).ToString();
         }
 
         public string Part2(string input)
