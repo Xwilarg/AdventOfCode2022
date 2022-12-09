@@ -27,14 +27,19 @@
             return new Vector2Int() { X = x, Y = y };
         }
 
-        public string Part1(string input)
+        private static int Simulate(string input, int snakeLength)
         {
-            var head = new Vector2Int() { X = 0, Y = 0 };
-            var tail = new Vector2Int() { X = 0, Y = 0 };
 
+            var head = new Vector2Int() { X = 0, Y = 0 };
+
+            List<Vector2Int> snake = new();
+            for (var i = 0; i < snakeLength; i++)
+            {
+                snake.Add(new() { X = 0, Y = 0 });
+            }
             List<Vector2Int> visited = new()
             {
-                tail
+                new() { X = 0, Y = 0 }
             };
 
             foreach (var line in input.Split('\n'))
@@ -55,26 +60,36 @@
                 {
                     head = new Vector2Int() { X = head.X + dir.X, Y = head.Y + dir.Y };
 
-                    // The tail is too far from the head
-                    if (head.Distance(tail) > Math.Sqrt(2))
+                    for (var ti = 0; ti < snake.Count; ti++)
                     {
-                        var relativeDir = GetRelativePosition(head, tail);
+                        var previous = ti == 0 ? head : snake[ti - 1];
 
-                        tail = new Vector2Int() { X = tail.X + relativeDir.X, Y = tail.Y + relativeDir.Y };
-                        if (!visited.Any(v => v.X == tail.X && v.Y == tail.Y))
+                        // The tail is too far from the previous element
+                        if (previous.Distance(snake[ti]) > Math.Sqrt(2))
                         {
-                            visited.Add(tail);
+                            var relativeDir = GetRelativePosition(previous, snake[ti]);
+
+                            snake[ti] = new() { X = snake[ti].X + relativeDir.X, Y = snake[ti].Y + relativeDir.Y };
                         }
+                    }
+                    if (!visited.Any(v => v.X == snake[^1].X && v.Y == snake[^1].Y))
+                    {
+                        visited.Add(snake[^1]);
                     }
                 }
             }
 
-            return visited.Count.ToString();
+            return visited.Count;
+        }
+
+        public string Part1(string input)
+        {
+            return Simulate(input, 1).ToString();
         }
 
         public string Part2(string input)
         {
-            return string.Empty;
+            return Simulate(input, 10).ToString();
         }
     }
 }
