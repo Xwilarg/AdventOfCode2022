@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2022.Day
+﻿using System.Text;
+
+namespace AdventOfCode2022.Day
 {
     public class Day09 : IDay
     {
@@ -29,7 +31,6 @@
 
         private static int Simulate(string input, int snakeLength)
         {
-
             var head = new Vector2Int() { X = 0, Y = 0 };
 
             List<Vector2Int> snake = new();
@@ -71,6 +72,10 @@
 
                             snake[ti] = new() { X = snake[ti].X + relativeDir.X, Y = snake[ti].Y + relativeDir.Y };
                         }
+                        else
+                        {
+                            break; // The current element is not moving so there will be no change to the next ones
+                        }
                     }
                     if (!visited.Any(v => v.X == snake[^1].X && v.Y == snake[^1].Y))
                     {
@@ -89,7 +94,7 @@
 
         public string Part2(string input)
         {
-            return Simulate(input, 10).ToString();
+            return Simulate(input, 9).ToString();
         }
     }
 }
