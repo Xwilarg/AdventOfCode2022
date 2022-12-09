@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace AdventOfCode2022.Day
+﻿namespace AdventOfCode2022.Day
 {
     public class Day09 : IDay
     {
@@ -8,6 +6,11 @@ namespace AdventOfCode2022.Day
         {
             public required int X { init; get; }
             public required int Y { init; get; }
+
+            public float Distance(Vector2Int o)
+            {
+                return (float)Math.Sqrt(Math.Pow(X - o.X, 2) + Math.Pow(Y - o.Y, 2));
+            }
         }
 
         private static Vector2Int GetRelativePosition(Vector2Int v1, Vector2Int v2)
@@ -26,12 +29,11 @@ namespace AdventOfCode2022.Day
 
         public string Part1(string input)
         {
-            var head = new Vector2Int() { X = 1, Y = 0 };
+            var head = new Vector2Int() { X = 0, Y = 0 };
             var tail = new Vector2Int() { X = 0, Y = 0 };
 
             List<Vector2Int> visited = new()
             {
-                head,
                 tail
             };
 
@@ -52,17 +54,13 @@ namespace AdventOfCode2022.Day
                 for (int i = 0; i < len; i++)
                 {
                     head = new Vector2Int() { X = head.X + dir.X, Y = head.Y + dir.Y };
-                    if (!visited.Any(v => v.X == head.X && v.Y == head.Y))
-                    {
-                        visited.Add(head);
-                    }
-
-                    var relativeDir = GetRelativePosition(head, tail);
 
                     // The tail is too far from the head
-                    if (relativeDir.X + relativeDir.Y > 1)
+                    if (head.Distance(tail) > Math.Sqrt(2))
                     {
-                        tail = new Vector2Int() { X =  relativeDir.X, Y = relativeDir.Y };
+                        var relativeDir = GetRelativePosition(head, tail);
+
+                        tail = new Vector2Int() { X = tail.X + relativeDir.X, Y = tail.Y + relativeDir.Y };
                         if (!visited.Any(v => v.X == tail.X && v.Y == tail.Y))
                         {
                             visited.Add(tail);
