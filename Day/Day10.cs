@@ -34,6 +34,7 @@ namespace AdventOfCode2022.Day
             var score = 0;
             Execute(input, (int cycle, int value) =>
             {
+                // Increase score every 40 lines, starting line 20
                 if ((cycle - 20) % 40 == 0)
                 {
                     score += value * cycle;
@@ -45,15 +46,16 @@ namespace AdventOfCode2022.Day
         public string Part2(string input)
         {
             var width = 40;
-            var height = 1;
             StringBuilder str = new();
             str.AppendLine();
             var oldValue = 1;
             Execute(input, (int cycle, int value) =>
             {
                 cycle--;
-                str.Append(cycle >= oldValue && cycle < oldValue + 3 ? "#" : ".");
-                if (cycle % 40 == 0)
+                // Is the cycle in the 3 pixels of the position?
+                // We do % width since it reset every line
+                str.Append(cycle % width >= oldValue && cycle % width < oldValue + 3 ? "#" : ".");
+                if (cycle % width == 0)
                 {
                     str.AppendLine();
                 }
