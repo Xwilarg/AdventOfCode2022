@@ -1,21 +1,19 @@
-﻿namespace AdventOfCode2022.Day
+﻿using System.Text;
+
+namespace AdventOfCode2022.Day
 {
     public class Day10 : IDay
     {
-        public string Part1(string input)
+        private static void Execute(string input, Action<int, int> onCycle)
         {
             var cycle = 1;
             var value = 1;
-            var score = 0;
 
             void increaseCycle()
             {
                 cycle++;
 
-                if ((cycle - 20) % 40 == 0)
-                {
-                    score += value * cycle;
-                }
+                onCycle(cycle, value);
             }
 
             foreach (var line in input.Split('\n'))
@@ -29,13 +27,40 @@
                 }
                 increaseCycle();
             }
+        }
 
+        public string Part1(string input)
+        {
+            var score = 0;
+            Execute(input, (int cycle, int value) =>
+            {
+                if ((cycle - 20) % 40 == 0)
+                {
+                    score += value * cycle;
+                }
+            });
             return score.ToString();
         }
 
         public string Part2(string input)
         {
-            return string.Empty;
+            var width = 40;
+            var height = 1;
+            StringBuilder str = new();
+            str.AppendLine();
+            var oldValue = 1;
+            Execute(input, (int cycle, int value) =>
+            {
+                cycle--;
+                str.Append(cycle >= oldValue && cycle < oldValue + 3 ? "#" : ".");
+                if (cycle % 40 == 0)
+                {
+                    str.AppendLine();
+                }
+                oldValue = value; // We need to do instructions at the start of the cycle
+            });
+
+            return str.ToString();
         }
     }
 }
