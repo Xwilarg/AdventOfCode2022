@@ -7,7 +7,7 @@ namespace AdventOfCode2022.Day
     {
         private class Monkey
         {
-            public required List<int> ItemList { init; get; }
+            public required List<long> ItemList { init; get; }
             public required char WorryOperand { init; get; }
             public required string WorryValue { init; get; }
             public required int WorryDivideCheck { init; get; }
@@ -16,7 +16,7 @@ namespace AdventOfCode2022.Day
             public int InspectionCount { set; get; } = 0;
         }
 
-        public int Execute(string input, int iterationCount, Func<int, int> onDataChange)
+        public long Execute(string input, int iterationCount, Func<long, long> onDataChange)
         {
             var matches = Regex.Matches(input, "Monkey [0-9]+:\n  Starting items: ([0-9, ]+)\n  Operation: new = old ([+*]) ([0-9]+|old)\n  Test: divisible by ([0-9]+)\n    If true: throw to monkey ([0-9]+)\n    If false: throw to monkey ([0-9]+)", RegexOptions.Compiled);
             List<Monkey> monkeys = new();
@@ -27,7 +27,7 @@ namespace AdventOfCode2022.Day
                 var groups = match.Groups;
                 monkeys.Add(new()
                 {
-                    ItemList = groups[1].Value.Split(',').Select(int.Parse).ToList(),
+                    ItemList = groups[1].Value.Split(',').Select(long.Parse).ToList(),
                     WorryOperand = groups[2].Value[0],
                     WorryValue = groups[3].Value,
                     WorryDivideCheck = int.Parse(groups[4].Value),
@@ -35,6 +35,7 @@ namespace AdventOfCode2022.Day
                     WorryTargetFalse = int.Parse(groups[6].Value)
                 });
             }
+            var maxMult = monkeys.Select(x => x.WorryDivideCheck).Aggregate((a, b) => a * b);
             foreach (var _ in Enumerable.Range(0, iterationCount))
             {
                 foreach (var monkey in monkeys)
@@ -52,15 +53,21 @@ namespace AdventOfCode2022.Day
                         });
                     }))
                     {
+                        var nb = data;
+                        while (nb > maxMult)
+                        {
+                            nb -= maxMult;
+                        }
+
                         // Send data to the right monkey
-                        monkeys[data % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(data);
+                        monkeys[nb % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(nb);
                         monkey.InspectionCount++;
                     }
                     monkey.ItemList.Clear();
                 }
             }
             var ordered = monkeys.Select(x => x.InspectionCount).OrderByDescending(x => x).ToArray();
-            return ordered[0] * ordered[1];
+            return ordered[0] * (long)ordered[1];
 
         }
 
