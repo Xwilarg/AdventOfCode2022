@@ -13,7 +13,7 @@ namespace AdventOfCode2022.Day
             foreach (var match in matches.Cast<Match>())
             {
                 var groups = match.Groups;
-                var sending = groups[1].Value.Split(',').Select(x =>
+                monkeys[index].AddRange(groups[1].Value.Split(',').Select(x =>
                 {
                     var a = int.Parse(x);
                     var b = groups[3].Value == "old" ? a : int.Parse(groups[3].Value);
@@ -23,16 +23,18 @@ namespace AdventOfCode2022.Day
                         "*" => a * b,
                         _ => throw new()
                     };
-                });
-                foreach (var data in sending)
+                }));
+                foreach (var data in monkeys[index])
                 {
-                    monkeys[int.Parse((data % int.Parse(groups[4].Value) == 0 ? groups[5] : groups[6]).Value)].Add(data);
+                    var newData = (int)Math.Round(data / 3f);
+                    monkeys[int.Parse((newData % int.Parse(groups[4].Value) == 0 ? groups[5] : groups[6]).Value)].Add(newData);
                 }
+                monkeys[index].Clear();
                 index++;
             }
             foreach (var m in monkeys)
             {
-                Console.WriteLine($"Money content: {string.Join(", ", m)}");
+                Console.WriteLine($"Monkey content: {string.Join(", ", m)}");
             }
             return string.Empty;
         }
