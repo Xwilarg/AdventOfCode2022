@@ -4,9 +4,6 @@ namespace AdventOfCode2022.Day
 {
     public partial class Day05 : IDay
     {
-        [GeneratedRegex("move (\\d+) from (\\d+) to (\\d+)")]
-        private static partial Regex MoveParsingRegex();
-
         /// <param name="input">File content</param>
         /// <param name="onDataPush">
         /// Modification done when data are pushed on a stack
@@ -55,7 +52,7 @@ namespace AdventOfCode2022.Day
             // Move data around
             foreach (var str in lines.Skip(line + 1))
             {
-                var data = MoveParsingRegex().Match(str);
+                var data = Regex.Match(str, "move (\\d+) from (\\d+) to (\\d+)", RegexOptions.Compiled);
 
                 var count = int.Parse(data.Groups[1].Value);
                 var from = int.Parse(data.Groups[2].Value);
