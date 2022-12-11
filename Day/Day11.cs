@@ -13,21 +13,20 @@ namespace AdventOfCode2022.Day
             foreach (var match in matches.Cast<Match>())
             {
                 var groups = match.Groups;
-                monkeys[index].AddRange(groups[1].Value.Split(',').Select(x =>
+                monkeys[index].AddRange(groups[1].Value.Split(',').Select(int.Parse));
+                foreach (var data in monkeys[index].Select(x =>
                 {
-                    var a = int.Parse(x);
+                    var a = x;
                     var b = groups[3].Value == "old" ? a : int.Parse(groups[3].Value);
-                    return groups[2].Value switch
+                    return (int)Math.Round(groups[2].Value switch
                     {
                         "+" => a + b,
                         "*" => a * b,
                         _ => throw new()
-                    };
-                }));
-                foreach (var data in monkeys[index])
+                    } / 3f);
+                }))
                 {
-                    var newData = (int)Math.Round(data / 3f);
-                    monkeys[int.Parse((newData % int.Parse(groups[4].Value) == 0 ? groups[5] : groups[6]).Value)].Add(newData);
+                    monkeys[int.Parse((data % int.Parse(groups[4].Value) == 0 ? groups[5] : groups[6]).Value)].Add(data);
                 }
                 monkeys[index].Clear();
                 index++;
