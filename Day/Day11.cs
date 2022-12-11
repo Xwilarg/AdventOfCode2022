@@ -35,6 +35,8 @@ namespace AdventOfCode2022.Day
                     WorryTargetFalse = int.Parse(groups[6].Value)
                 });
             }
+
+            // Only works because all dividers are prime
             var maxMult = monkeys.Select(x => x.WorryDivideCheck).Aggregate((a, b) => a * b);
             foreach (var _ in Enumerable.Range(0, iterationCount))
             {
@@ -50,17 +52,11 @@ namespace AdventOfCode2022.Day
                             '+' => a + b,
                             '*' => a * b,
                             _ => throw new()
-                        });
+                        } % maxMult);
                     }))
                     {
-                        var nb = data;
-                        while (nb > maxMult)
-                        {
-                            nb -= maxMult;
-                        }
-
                         // Send data to the right monkey
-                        monkeys[nb % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(nb);
+                        monkeys[data % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(data);
                         monkey.InspectionCount++;
                     }
                     monkey.ItemList.Clear();
