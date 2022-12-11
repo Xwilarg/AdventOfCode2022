@@ -13,6 +13,7 @@ namespace AdventOfCode2022.Day
             public required int WorryDivideCheck { init; get; }
             public required int WorryTargetTrue { init; get; }
             public required int WorryTargetFalse { init; get; }
+            public int InspectionCount { set; get; } = 0;
         }
 
         public string Part1(string input)
@@ -33,29 +34,30 @@ namespace AdventOfCode2022.Day
                     WorryTargetFalse = int.Parse(groups[6].Value)
                 });
             }
-            foreach (var monkey in monkeys)
+            foreach (var _ in Enumerable.Range(0, 20))
             {
-                foreach (var data in monkey.ItemList.Select(x =>
+                foreach (var monkey in monkeys)
                 {
-                    var a = x;
-                    var b = monkey.WorryValue == "old" ? a : int.Parse(monkey.WorryValue);
-                    return (int)Math.Round(monkey.WorryOperand switch
+                    foreach (var data in monkey.ItemList.Select(x =>
                     {
-                        '+' => a + b,
-                        '*' => a * b,
-                        _ => throw new()
-                    } / 3f);
-                }))
-                {
-                    monkeys[data % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(data);
+                        var a = x;
+                        var b = monkey.WorryValue == "old" ? a : int.Parse(monkey.WorryValue);
+                        return monkey.WorryOperand switch
+                        {
+                            '+' => a + b,
+                            '*' => a * b,
+                            _ => throw new()
+                        } / 3;
+                    }))
+                    {
+                        monkeys[data % monkey.WorryDivideCheck == 0 ? monkey.WorryTargetTrue : monkey.WorryTargetFalse].ItemList.Add(data);
+                        monkey.InspectionCount++;
+                    }
+                    monkey.ItemList.Clear();
                 }
-                monkey.ItemList.Clear();
             }
-            foreach (var m in monkeys)
-            {
-                Console.WriteLine($"Monkey content: {string.Join(", ", m.ItemList)}");
-            }
-            return string.Empty;
+            var ordered = monkeys.Select(x => x.InspectionCount).OrderByDescending(x => x).ToArray();
+            return (ordered[0] * ordered[1]).ToString();
         }
 
         public string Part2(string input)
